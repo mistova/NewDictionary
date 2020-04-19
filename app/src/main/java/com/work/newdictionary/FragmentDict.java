@@ -1,9 +1,11 @@
 package com.work.newdictionary;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +31,14 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class FragmentDict extends Fragment implements View.OnClickListener {
+public class FragmentDict extends Fragment implements View.OnClickListener, View.OnKeyListener{
     @Nullable
     ImageView imageBtn;
     EditText txt;
     ArrayList<ListViewModel> lvModel = new ArrayList<>();
     ListView list;
+
+    Communicate c;
 
     private AdView mAdView;
 
@@ -46,15 +50,18 @@ public class FragmentDict extends Fragment implements View.OnClickListener {
         txt = view.findViewById(R.id.textView2);
         imageBtn = view.findViewById(R.id.imageView);
         imageBtn.setOnClickListener(this);
-        Communicate c = (Communicate) getActivity();
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int clr = sharedPref.getInt("color", -13224394);
-        int buttonClr = sharedPref.getInt("action_color", -13224394);
+        c = (Communicate) getActivity();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("my_pref", Context.MODE_PRIVATE);
+        int clr = sharedPref.getInt("color", -1);
+        int buttonClr = sharedPref.getInt("action_color", -16642494);
         view.setBackgroundColor(clr);
         c.background(clr);
         imageBtn.setBackgroundColor(buttonClr);
 
-        MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
+        txt.setOnKeyListener(this);
+
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
@@ -71,27 +78,33 @@ public class FragmentDict extends Fragment implements View.OnClickListener {
 
         Bundle bundle = getArguments();
         if(bundle != null)
-            if(bundle.getBoolean("cnt")){
+            if(bundle.getBoolean("cnt", false)){
                 bundle.putBoolean("cnt", false);
-                itemFind(bundle.getString("word"));
+                itemFindFromList(bundle.getString("word", ""));
             }
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        if(v == imageBtn){
-            String tex = txt.getText().toString();
-            req(tex);
-            if(dataSource.isSet(tex))
-                dataSource.createWord(tex);
-        }
+        if(v == imageBtn)
+            itemFindFromText();
     }
-    private void itemFind(String tex) {
+
+    private void itemFindFromText() {
+        c.hideKeyboard(getActivity());
+        String tex = txt.getText().toString();
+        req(tex);
+        if(dataSource.isSet(tex) /*&& lvModel.get(0).toString() != ""*/)
+            dataSource.createWord(tex);
+    }
+
+    private void itemFindFromList(String tex) {
         txt.setText(tex);
         req(tex);
     }
     private void req(final String word) {
+        final ProgressDialog dialog = ProgressDialog.show(getContext(), null, "Please Wait");
         if(word.isEmpty()){
             Toast.makeText(getContext(), "Please fill it!", Toast.LENGTH_SHORT).show();
         }
@@ -106,10 +119,12 @@ public class FragmentDict extends Fragment implements View.OnClickListener {
                         public void onResponse(String  response) {
                             Log.i("FragDic",response);
                             ans(response);
+                            dialog.dismiss();
                         }
                         @Override
                         public void onError(ANError error) {
                             Log.e("FragDic", error.getMessage());
+                            dialog.dismiss();
                         }
                     });
         }
@@ -152,5 +167,15 @@ public class FragmentDict extends Fragment implements View.OnClickListener {
         else{
             Toast.makeText(getContext(), "\"Failed\"", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            itemFindFromText();
+            return true;
+        }
+        return false;
     }
 }

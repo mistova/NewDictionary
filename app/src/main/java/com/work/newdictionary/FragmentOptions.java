@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +26,6 @@ public class FragmentOptions extends Fragment implements View.OnClickListener {
     Drawable drawable;
     View view;
     SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
 
     public static DataSource dataSource;
 
@@ -33,10 +33,10 @@ public class FragmentOptions extends Fragment implements View.OnClickListener {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_options, container, false);
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
 
-        int clr = sharedPref.getInt("color", -13224394);
+        sharedPref = getActivity().getSharedPreferences("my_pref", Context.MODE_PRIVATE);
+
+        int clr = sharedPref.getInt("color", -1);
         view.setBackgroundColor(clr);
 
         findViews(view);
@@ -57,13 +57,9 @@ public class FragmentOptions extends Fragment implements View.OnClickListener {
         if((v == button[0]) || (v == button[5]) || (v == button[10]) || (v == button[15])){
             view.setBackgroundColor(clr);
             reqId(clr);
-            editor.putInt("color", clr);
-            editor.commit();
             c.background(clr);
         }
         else{
-            editor.putInt("action_color", clr);
-            editor.commit();
             reqId(clr);
             c.actionBar(clr);
         }

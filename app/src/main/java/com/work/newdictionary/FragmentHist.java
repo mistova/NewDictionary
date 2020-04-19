@@ -13,6 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+
 import java.util.ArrayList;
 
 import static com.work.newdictionary.FragmentDict.dataSource;
@@ -20,13 +26,15 @@ public class FragmentHist extends Fragment implements AdapterView.OnItemClickLis
 
     Communicate com;
 
+    private AdView mAdView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int clr = sharedPref.getInt("color", -13224394);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("my_pref", Context.MODE_PRIVATE);
+        int clr = sharedPref.getInt("color", -16642494);
         view.setBackgroundColor(clr);
 
         com = (Communicate) getActivity();
@@ -39,6 +47,16 @@ public class FragmentHist extends Fragment implements AdapterView.OnItemClickLis
         ContactAdapter adaptor = new ContactAdapter(getActivity(), R.layout.special_list_item, lvModel);
         list.setAdapter(adaptor);
         list.setOnItemClickListener(this);
+
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = view.findViewById(R.id.adView2);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         return view;
     }
 

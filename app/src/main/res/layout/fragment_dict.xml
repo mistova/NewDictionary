@@ -6,54 +6,78 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7313539593936229/6830101610">
-
-    </com.google.android.gms.ads.AdView>
-    <LinearLayout
-        android:layout_weight="5"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center"
+        >
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-7313539593936229/2946887843">
+        </com.google.android.gms.ads.AdView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:weightSum="10"
         >
 
-        <EditText
-            android:id="@+id/textView2"
-            android:layout_weight="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:hint="The Word"
-            android:textColorHint="#000000"
-            android:textSize="30sp" />
-
-        <ImageView
-            android:id="@+id/imageView"
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="#000"
-            android:layout_marginLeft="40dp"
-            android:src="@drawable/magnifying_glass_finder" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            >
+
+            <EditText
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:hint="The Word"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="40dp"
+                android:layout_weight="1"
+                android:background="#000"
+                android:src="@drawable/magnifying_glass_finder" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/list_words"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/list_words"
-            android:layout_weight="5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
 
 </LinearLayout>
